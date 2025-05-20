@@ -18,10 +18,14 @@ export default function Home() {
 
     const nextDate = new Date(date);
     nextDate.setDate(nextDate.getDate() + 20);
+    nextDate.setMonth(nextDate.getMonth() + 1);
 
-    const nextInsemination = `${date.getFullYear()}-${pad(
-      date.getMonth() + 1
+    // 다음 수정일
+    const nextInsemination = `${nextDate.getFullYear()}-${pad(
+      nextDate.getMonth()
     )}-${pad(nextDate.getDate())}`;
+
+    // 분만 예정일
     const dueDate = `${date.getFullYear()}-${date.getMonth() - 3 + 1}-${
       date.getDate() + 10
     }`;
