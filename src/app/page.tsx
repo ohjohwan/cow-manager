@@ -16,19 +16,23 @@ export default function Home() {
   const Insemination_dueDate_Calculator = (date: Date) => {
     const pad = (n: number) => String(n).padStart(2, "0");
 
-    const nextDate = new Date(date);
-    nextDate.setDate(nextDate.getDate() + 20);
-    nextDate.setMonth(nextDate.getMonth() + 1);
+    const formatNextDate = new Date(date);
+    formatNextDate.setDate(formatNextDate.getDate() + 20);
+    formatNextDate.setMonth(formatNextDate.getMonth() + 1);
+
+    const formatDueDate = new Date(date);
+    formatDueDate.setDate(formatDueDate.getDate() + 10);
+    formatDueDate.setDate(formatDueDate.getMonth() - 3);
 
     // 다음 수정일
-    const nextInsemination = `${nextDate.getFullYear()}-${pad(
-      nextDate.getMonth()
-    )}-${pad(nextDate.getDate())}`;
+    const nextInsemination = `${formatNextDate.getFullYear()}-${pad(
+      formatNextDate.getMonth()
+    )}-${pad(formatNextDate.getDate())}`;
 
     // 분만 예정일
-    const dueDate = `${date.getFullYear()}-${date.getMonth() - 3 + 1}-${
-      date.getDate() + 10
-    }`;
+    const dueDate = `${formatDueDate.getFullYear()}-${
+      formatDueDate.getMonth() - 3
+    }-${formatDueDate.getDate() + 10}`;
 
     setTempField("nextInseminationDate", nextInsemination);
     setTempField("expectedDeliveryDate", dueDate);
