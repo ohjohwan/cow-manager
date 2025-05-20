@@ -6,11 +6,37 @@ import { useCowStore } from "@/store/useCattleDeliveryStore";
 
 export default function Home() {
   const [showCalendar, setShowCalendar] = useState(false); // 달력 표시 토글 상태
-  const { tempCow, setTempField, cowState } = useCowStore();
+  const { tempCow, setTempField, cowState, addCow } = useCowStore();
+  const [error, setError] = useState("");
 
   const handleDateSelect = (date: string) => {
     setTempField("inseminationDate", date);
     setShowCalendar(false); // 날짜 선택 후 캘린더 닫기
+  };
+
+  // 개체 번호 인풋 유효성 검사
+  const handleNumberCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    if (!/^\d+$/.test(value)) {
+      setError("숫자만 입력하세요.");
+    } else if (value.length < 4 || value.length > 10) {
+      setError("4~10자리 숫자를 입력하세요.");
+    } else {
+      setError("");
+    }
+
+    setTempField("number", e.target.value);
+  };
+
+  // 등록 전 중복 개체 검사
+  const handleAddCow = () => {
+    const isDuplicate = cowState.some((cow) => cow.number === tempCow.number);
+    if (isDuplicate) {
+      alert("이미 등록된 개체 번호입니다.");
+    } else {
+      addCow();
+    }
   };
 
   const Insemination_dueDate_Calculator = (date: Date) => {
@@ -38,6 +64,9 @@ export default function Home() {
     setTempField("expectedDeliveryDate", dueDate);
   };
 
+  const isValid =
+    Object.values(tempCow).every((value) => value !== "") && !error;
+
   return (
     <>
       <p className="text-[50px] text-center">소 개체 등록</p>
@@ -45,19 +74,26 @@ export default function Home() {
         <div>
           <h3>개체 번호</h3>
           <input
+            pattern="^\d+$"
             value={tempCow.number}
+            minLength={4}
+            maxLength={10}
             className="border-[1px]"
-            placeholder="1234"
-            onChange={(e) => setTempField("number", e.target.value)}
+            placeholder="개체 번호 입력"
+            onChange={(e) => handleNumberCheck(e)}
+            inputMode="numeric"
           ></input>
+          {error && <p>{error}</p>}
         </div>
         <div>
           <h3>수정 일자</h3>
           <input
+            pattern="^\d+$/"
             value={tempCow.inseminationDate}
+            required
             onClick={() => setShowCalendar((prev) => !prev)}
             readOnly
-            placeholder="YYYY-MM-DD"
+            placeholder="수정 일자 선택"
             className="border-[1px]"
           />
           {showCalendar && (
@@ -75,11 +111,24 @@ export default function Home() {
           <h3>다음 수정 일자</h3>
           <div className="w-[100px]">{tempCow.nextInseminationDate}</div>
         </div>
+        <button
+          className="border-[1px] w-[50px]"
+          onClick={handleAddCow}
+          disabled={!isValid}
+        >
+          등록
+        </button>
       </div>
       <p className="text-[50px] text-center">등록 개체</p>
       <ul>
         {cowState.map((cow) => {
-          return <li key={cow.number}>{cow}</li>;
+          return (
+            <div key={cow.number}>
+              <div>{cow.number}</div>
+              <button>수정</button>
+              <button>삭제</button>
+            </div>
+          );
         })}
       </ul>
     </>
