@@ -6,7 +6,7 @@ import { useCowStore } from "@/store/useCattleDeliveryStore";
 
 export default function Home() {
   const [showCalendar, setShowCalendar] = useState(false); // 달력 표시 토글 상태
-  const { tempCow, setTempField, cowState, addCow } = useCowStore();
+  const { tempCow, setTempField, cowState, addCow, deleteCow } = useCowStore();
   const [error, setError] = useState("");
 
   const handleDateSelect = (date: string) => {
@@ -16,7 +16,7 @@ export default function Home() {
 
   // 개체 번호 인풋 유효성 검사
   const handleNumberCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(" ", "");
+    const value = e.target.value.replace(/\s/g, "");
     let autoFormatted = value;
 
     if (value.length > 8) {
@@ -27,16 +27,19 @@ export default function Home() {
       autoFormatted = `${value.slice(0, 4)} ${value.slice(4, 8)}`;
     }
 
-    if (!/^\d*$/.test(value)) {
+    if (!/^\d+$/.test(value)) {
       setError("숫자만 입력하세요.");
-    } else if (value.length < 9) {
+    } else if (value.length !== 9) {
       setError("9자리 숫자를 입력하세요.");
+    } else {
+      // 유효한 입력인 경우에 에러 제거 필수 (꼭 기억하기)
+      setError("");
     }
 
     setTempField("number", autoFormatted);
   };
 
-  // 등록 전 중복 개체 검사
+  // 개체 등록(등록 전 중복 여부 검사 수행)
   const handleAddCow = () => {
     const isDuplicate = cowState.some((cow) => cow.number === tempCow.number);
     if (isDuplicate) {
@@ -127,19 +130,25 @@ export default function Home() {
         </button>
       </div>
       <p className="text-[50px] text-center">등록 개체</p>
-      <ul>
+      <div className="text-center w-[500px] flex flex-col justify-center items-center gap-[15px] mx-auto">
         {cowState.map((cow) => {
           return (
-            <div key={cow.number} className="flex">
+            <div key={cow.number} className="flex gap-[20px]">
               <div>{cow.number}</div>
-              <div>
-                <button className="block">수정</button>
-                <button className="block">삭제</button>
+              <div className="flex gap-[10px]">
+                <button className="border-[1px]">수정</button>
+                <button
+                  className="border-[1px]"
+                  onClick={() => deleteCow(cow.number)}
+                >
+                  삭제
+                </button>
               </div>
             </div>
           );
         })}
-      </ul>
+      </div>
+
       <p className="text-center text-[50px]">개체 번호 검색</p>
       <input className="border-[1px] w-full m-auto"></input>
     </>

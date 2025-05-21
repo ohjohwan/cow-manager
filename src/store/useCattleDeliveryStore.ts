@@ -15,7 +15,7 @@ interface CowStoreState {
   setTempField: (field: keyof Cow, value: string) => void;
 
   addCow: () => void;
-  deleteCow: () => void;
+  deleteCow: (cowNumber: string) => void;
 }
 
 export const useCowStore = create<CowStoreState>((set) => ({
@@ -47,13 +47,8 @@ export const useCowStore = create<CowStoreState>((set) => ({
       },
     })),
 
-  deleteCow: () =>
-    set({
-      tempCow: {
-        number: "",
-        inseminationDate: "",
-        expectedDeliveryDate: "",
-        nextInseminationDate: "",
-      },
-    }),
+  deleteCow: (cowNumber) =>
+    set((state) => ({
+      cowState: state.cowState.filter((cow) => cow.number !== cowNumber),
+    })),
 }));
