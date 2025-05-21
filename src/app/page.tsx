@@ -16,17 +16,24 @@ export default function Home() {
 
   // 개체 번호 인풋 유효성 검사
   const handleNumberCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.target.value.replace(" ", "");
+    let autoFormatted = value;
 
-    if (!/^\d+$/.test(value)) {
-      setError("숫자만 입력하세요.");
-    } else if (value.length < 4 || value.length > 10) {
-      setError("4~10자리 숫자를 입력하세요.");
-    } else {
-      setError("");
+    if (value.length > 8) {
+      autoFormatted = `${value.slice(0, 4)} ${value.slice(4, 8)} ${value.slice(
+        8
+      )}`;
+    } else if (value.length <= 8) {
+      autoFormatted = `${value.slice(0, 4)} ${value.slice(4, 8)}`;
     }
 
-    setTempField("number", e.target.value);
+    if (!/^\d*$/.test(value)) {
+      setError("숫자만 입력하세요.");
+    } else if (value.length < 9) {
+      setError("9자리 숫자를 입력하세요.");
+    }
+
+    setTempField("number", autoFormatted);
   };
 
   // 등록 전 중복 개체 검사
@@ -76,8 +83,8 @@ export default function Home() {
           <input
             pattern="^\d+$"
             value={tempCow.number}
-            minLength={4}
-            maxLength={10}
+            minLength={11}
+            maxLength={11}
             className="border-[1px]"
             placeholder="개체 번호 입력"
             onChange={(e) => handleNumberCheck(e)}
@@ -123,14 +130,18 @@ export default function Home() {
       <ul>
         {cowState.map((cow) => {
           return (
-            <div key={cow.number}>
+            <div key={cow.number} className="flex">
               <div>{cow.number}</div>
-              <button>수정</button>
-              <button>삭제</button>
+              <div>
+                <button className="block">수정</button>
+                <button className="block">삭제</button>
+              </div>
             </div>
           );
         })}
       </ul>
+      <p className="text-center text-[50px]">개체 번호 검색</p>
+      <input className="border-[1px] w-full m-auto"></input>
     </>
   );
 }

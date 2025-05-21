@@ -15,7 +15,7 @@ interface CowStoreState {
   setTempField: (field: keyof Cow, value: string) => void;
 
   addCow: () => void;
-  clearTempCow: () => void;
+  deleteCow: () => void;
 }
 
 export const useCowStore = create<CowStoreState>((set) => ({
@@ -47,7 +47,7 @@ export const useCowStore = create<CowStoreState>((set) => ({
       },
     })),
 
-  clearTempCow: () =>
+  deleteCow: () =>
     set({
       tempCow: {
         number: "",
