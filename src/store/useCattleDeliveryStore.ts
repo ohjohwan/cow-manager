@@ -2,9 +2,15 @@ import { create } from "zustand";
 
 interface Cow {
   number: string; // 개체 번호
+  gender: boolean | null;
   inseminationDate: string; // 수정 일자
   expectedDeliveryDate: string; // 분만 일자
   nextInseminationDate: string; // 다음 수정 일자자
+}
+
+export interface EditCow extends Cow {
+  vaccineCheck: boolean;
+  vaccineDose: string[] | string;
 }
 
 interface CowStoreState {
@@ -16,13 +22,16 @@ interface CowStoreState {
 
   addCow: () => void;
   deleteCow: (cowNumber: string) => void;
+
+  searchCow: (cowNumber: string) => void;
 }
 
-export const useCowStore = create<CowStoreState>((set) => ({
+export const useCowStore = create<CowStoreState>((set, get) => ({
   cowState: [],
 
   tempCow: {
     number: "",
+    gender: null,
     inseminationDate: "",
     expectedDeliveryDate: "",
     nextInseminationDate: "",
@@ -41,6 +50,7 @@ export const useCowStore = create<CowStoreState>((set) => ({
       cowState: [...state.cowState, state.tempCow],
       tempCow: {
         number: "",
+        gender: null,
         inseminationDate: "",
         expectedDeliveryDate: "",
         nextInseminationDate: "",
@@ -51,4 +61,7 @@ export const useCowStore = create<CowStoreState>((set) => ({
     set((state) => ({
       cowState: state.cowState.filter((cow) => cow.number !== cowNumber),
     })),
+
+  searchCow: (cowNumber) =>
+    get().cowState.find((cow) => cow.number === cowNumber),
 }));

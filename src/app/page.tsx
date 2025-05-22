@@ -3,11 +3,15 @@
 import Calendar from "@/components/Calendar";
 import { useState } from "react";
 import { useCowStore } from "@/store/useCattleDeliveryStore";
+import { EditCow } from "@/store/useCattleDeliveryStore";
 
 export default function Home() {
   const [showCalendar, setShowCalendar] = useState(false); // 달력 표시 토글 상태
-  const { tempCow, setTempField, cowState, addCow, deleteCow } = useCowStore();
+  const { tempCow, setTempField, cowState, addCow, deleteCow, searchCow } =
+    useCowStore();
   const [error, setError] = useState("");
+  const [searchCowNumber, setSearchCowNumber] = useState("");
+  const [searchReturn, setSearchReturn] = useState<EditCow | null>(null);
 
   const handleDateSelect = (date: string) => {
     setTempField("inseminationDate", date);
@@ -49,6 +53,7 @@ export default function Home() {
     }
   };
 
+  // 분만 예정일, 수정일 계산식
   const Insemination_dueDate_Calculator = (date: Date) => {
     const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -76,6 +81,11 @@ export default function Home() {
 
   const isValid =
     Object.values(tempCow).every((value) => value !== "") && !error;
+
+  const handleSearchCow = (cowNumber: string) => {
+    const result = searchCow(cowNumber);
+    setSearchReturn(result ?? null);
+  };
 
   return (
     <>
@@ -150,7 +160,27 @@ export default function Home() {
       </div>
 
       <p className="text-center text-[50px]">개체 번호 검색</p>
-      <input className="border-[1px] w-full m-auto"></input>
+      <div className="flex gap-[15px]">
+        <input
+          value={searchCowNumber}
+          className="border-[1px] w-full m-auto"
+          onChange={(e) => setSearchCowNumber(e.target.value)}
+        ></input>
+        <button
+          className="block w-[40px] border-[1px]"
+          onClick={() => handleSearchCow(searchCowNumber)}
+        >
+          검색
+        </button>
+      </div>
+      <div>
+        {searchReturn && (
+          <>
+            <div>{searchReturn.number}</div>
+            <div>{searchReturn.gender}</div>
+          </>
+        )}
+      </div>
     </>
   );
 }
