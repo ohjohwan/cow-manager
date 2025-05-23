@@ -18,8 +18,8 @@ export default function Home() {
     setShowCalendar(false); // 날짜 선택 후 캘린더 닫기
   };
 
-  // 개체 번호 인풋 유효성 검사
-  const handleNumberCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 개체 번호 자동 포맷
+  const handleFomatted = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\s/g, "");
     let autoFormatted = value;
 
@@ -31,6 +31,15 @@ export default function Home() {
       autoFormatted = `${value.slice(0, 4)} ${value.slice(4, 8)}`;
     }
 
+    return autoFormatted;
+  };
+
+  // 개체 번호 인풋 유효성 검사
+  const handleNumberCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\s/g, "");
+
+    const returnFormatted = handleFomatted(e);
+
     if (!/^\d+$/.test(value)) {
       setError("숫자만 입력하세요.");
     } else if (value.length !== 9) {
@@ -40,7 +49,7 @@ export default function Home() {
       setError("");
     }
 
-    setTempField("number", autoFormatted);
+    setTempField("number", returnFormatted);
   };
 
   // 개체 등록(등록 전 중복 여부 검사 수행)
@@ -164,7 +173,9 @@ export default function Home() {
         <input
           value={searchCowNumber}
           className="border-[1px] w-full m-auto"
-          onChange={(e) => setSearchCowNumber(e.target.value)}
+          onChange={(e) => setSearchCowNumber(handleFomatted(e))}
+          maxLength={11}
+          minLength={11}
         ></input>
         <button
           className="block w-[40px] border-[1px]"
