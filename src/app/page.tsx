@@ -27,8 +27,10 @@ export default function Home() {
       autoFormatted = `${value.slice(0, 4)} ${value.slice(4, 8)} ${value.slice(
         8
       )}`;
-    } else if (value.length <= 8) {
+    } else if (value.length > 5) {
       autoFormatted = `${value.slice(0, 4)} ${value.slice(4, 8)}`;
+    } else {
+      autoFormatted = `${value.slice(0, value.length)}`;
     }
 
     return autoFormatted;
