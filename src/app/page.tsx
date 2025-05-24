@@ -4,6 +4,7 @@ import Calendar from "@/components/Calendar";
 import { useState } from "react";
 import { useCowStore } from "@/store/useCattleDeliveryStore";
 import { EditCow } from "@/store/useCattleDeliveryStore";
+import EditModal from "@/components/EditModal";
 
 export default function Home() {
   const [showCalendar, setShowCalendar] = useState(false); // 달력 표시 토글 상태
@@ -12,6 +13,7 @@ export default function Home() {
   const [error, setError] = useState("");
   const [searchCowNumber, setSearchCowNumber] = useState("");
   const [searchReturn, setSearchReturn] = useState<EditCow | null>(null);
+  const [editToggle, setEditToggle] = useState(false);
 
   const handleDateSelect = (date: string) => {
     setTempField("inseminationDate", date);
@@ -98,8 +100,14 @@ export default function Home() {
     setSearchReturn(result ?? null);
   };
 
+  // 개체 정보 수정 모달 토글
+  const handleEditToggle = () => {
+    setEditToggle(!editToggle);
+  };
+
   return (
     <>
+      {editToggle && <EditModal toggle={handleEditToggle} />}
       <p className="text-[50px] text-center">소 개체 등록</p>
       <div className="text-white text-[15px] flex gap-[20px]">
         <div>
@@ -157,7 +165,9 @@ export default function Home() {
             <div key={cow.number} className="flex gap-[20px]">
               <div>{cow.number}</div>
               <div className="flex gap-[10px]">
-                <button className="border-[1px]">수정</button>
+                <button className="border-[1px]" onClick={handleEditToggle}>
+                  수정
+                </button>
                 <button
                   className="border-[1px]"
                   onClick={() => deleteCow(cow.number)}
@@ -188,10 +198,20 @@ export default function Home() {
       </div>
       <div>
         {searchReturn && (
-          <>
+          <div className="flex gap-[20px]">
             <div>{searchReturn.number}</div>
-            <div>{searchReturn.gender}</div>
-          </>
+            <div className="flex gap-[10px]">
+              <button className="border-[1px]" onClick={handleEditToggle}>
+                수정
+              </button>
+              <button
+                className="border-[1px]"
+                onClick={() => deleteCow(searchReturn.number)}
+              >
+                삭제
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </>
