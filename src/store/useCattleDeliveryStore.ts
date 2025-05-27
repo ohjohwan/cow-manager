@@ -1,17 +1,18 @@
 import { create } from "zustand";
 
-interface Cow {
+export interface Cow {
   number: string; // 개체 번호
-  gender: boolean | null;
   inseminationDate: string; // 수정 일자
   expectedDeliveryDate: string; // 분만 일자
   nextInseminationDate: string; // 다음 수정 일자자
+  age?: string; // 개체 나이
+  vaccineCheck?: boolean; // 백신 접종 여부
+  vaccineDose?: string[] | string; // 백신 접종 차수
 }
 
-export interface EditCow extends Cow {
-  vaccineCheck: boolean;
-  vaccineDose: string[] | string;
-}
+export type EditableCow = {
+  number: string;
+} & Partial<Omit<Cow, "number">>;
 
 interface CowStoreState {
   cowState: Cow[]; // 소 정보 배열
@@ -20,9 +21,16 @@ interface CowStoreState {
 
   setTempField: (field: keyof Cow, value: string) => void;
 
+  // 개체 추가
   addCow: () => void;
+
+  // 개체 삭제
   deleteCow: (cowNumber: string) => void;
 
+  // 개체 수정
+  editCow: (payload: EditableCow) => void;
+
+  // 개체 검색
   searchCow: (cowNumber: string) => void;
 }
 
@@ -31,7 +39,6 @@ export const useCowStore = create<CowStoreState>((set, get) => ({
 
   tempCow: {
     number: "",
-    gender: null,
     inseminationDate: "",
     expectedDeliveryDate: "",
     nextInseminationDate: "",
@@ -50,7 +57,7 @@ export const useCowStore = create<CowStoreState>((set, get) => ({
       cowState: [...state.cowState, state.tempCow],
       tempCow: {
         number: "",
-        gender: null,
+        gender: "",
         inseminationDate: "",
         expectedDeliveryDate: "",
         nextInseminationDate: "",
@@ -60,6 +67,13 @@ export const useCowStore = create<CowStoreState>((set, get) => ({
   deleteCow: (cowNumber) =>
     set((state) => ({
       cowState: state.cowState.filter((cow) => cow.number !== cowNumber),
+    })),
+
+  editCow: (payload) =>
+    set((state) => ({
+      cowState: state.cowState.map((cow) =>
+        cow.number === payload.number ? { ...cow, ...payload } : cow
+      ),
     })),
 
   searchCow: (cowNumber) =>

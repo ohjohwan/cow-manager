@@ -3,7 +3,7 @@
 import Calendar from "@/components/Calendar";
 import { useState } from "react";
 import { useCowStore } from "@/store/useCattleDeliveryStore";
-import { EditCow } from "@/store/useCattleDeliveryStore";
+import { Cow } from "@/store/useCattleDeliveryStore";
 import EditModal from "@/components/EditModal";
 
 export default function Home() {
@@ -12,8 +12,9 @@ export default function Home() {
     useCowStore();
   const [error, setError] = useState("");
   const [searchCowNumber, setSearchCowNumber] = useState("");
-  const [searchReturn, setSearchReturn] = useState<EditCow | null>(null);
+  const [searchReturn, setSearchReturn] = useState<Cow | null>(null);
   const [editToggle, setEditToggle] = useState(false);
+  const [selectedCow, setSelectedCow] = useState<Cow | null>(null);
 
   const handleDateSelect = (date: string) => {
     setTempField("inseminationDate", date);
@@ -100,14 +101,17 @@ export default function Home() {
     setSearchReturn(result ?? null);
   };
 
-  // 개체 정보 수정 모달 토글
-  const handleEditToggle = () => {
+  // 개체 정보 수정 모달
+  const handleEditModal = (cow?: Cow) => {
+    if (cow) setSelectedCow(cow);
     setEditToggle(!editToggle);
   };
 
   return (
     <>
-      {editToggle && <EditModal toggle={handleEditToggle} />}
+      {editToggle && selectedCow && (
+        <EditModal toggle={handleEditModal} cow={selectedCow} />
+      )}
       <p className="text-[50px] text-center">소 개체 등록</p>
       <div className="text-white text-[15px] flex gap-[20px]">
         <div>
@@ -165,7 +169,10 @@ export default function Home() {
             <div key={cow.number} className="flex gap-[20px]">
               <div>{cow.number}</div>
               <div className="flex gap-[10px]">
-                <button className="border-[1px]" onClick={handleEditToggle}>
+                <button
+                  className="border-[1px]"
+                  onClick={() => handleEditModal(cow)}
+                >
                   수정
                 </button>
                 <button
@@ -201,7 +208,10 @@ export default function Home() {
           <div className="flex gap-[20px]">
             <div>{searchReturn.number}</div>
             <div className="flex gap-[10px]">
-              <button className="border-[1px]" onClick={handleEditToggle}>
+              <button
+                className="border-[1px]"
+                onClick={() => selectedCow && handleEditModal(selectedCow)}
+              >
                 수정
               </button>
               <button
