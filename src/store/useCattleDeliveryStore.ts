@@ -2,6 +2,7 @@ import { create } from "zustand";
 
 export interface Cow {
   number: string; // 개체 번호
+  gender: boolean | null;
   inseminationDate: string; // 수정 일자
   expectedDeliveryDate: string; // 분만 일자
   nextInseminationDate: string; // 다음 수정 일자자
@@ -19,7 +20,7 @@ interface CowStoreState {
 
   tempCow: Cow; // 현재 입력 중인 소 정보
 
-  setTempField: (field: keyof Cow, value: string) => void;
+  setTempField: (field: keyof Cow, value: string | boolean) => void;
 
   // 개체 추가
   addCow: () => void;
@@ -39,6 +40,7 @@ export const useCowStore = create<CowStoreState>((set, get) => ({
 
   tempCow: {
     number: "",
+    gender: null,
     inseminationDate: "",
     expectedDeliveryDate: "",
     nextInseminationDate: "",
@@ -57,7 +59,7 @@ export const useCowStore = create<CowStoreState>((set, get) => ({
       cowState: [...state.cowState, state.tempCow],
       tempCow: {
         number: "",
-        gender: "",
+        gender: null,
         inseminationDate: "",
         expectedDeliveryDate: "",
         nextInseminationDate: "",

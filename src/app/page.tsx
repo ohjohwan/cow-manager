@@ -146,13 +146,30 @@ export default function Home() {
             />
           )}
         </div>
-        <div>
-          <h3>분만 예정일</h3>
-          <div className="w-[100px]">{tempCow.expectedDeliveryDate}</div>
-        </div>
-        <div>
-          <h3>다음 수정 일자</h3>
-          <div className="w-[100px]">{tempCow.nextInseminationDate}</div>
+        <div className="flex flex-col justify-center items-center">
+          <h3>암수 여부</h3>
+          <div className="border-[1px] w-[180px] flex justify-center gap-[20px] h-[26px]">
+            <label>
+              <input
+                type="radio"
+                name="gender"
+                checked={tempCow.gender === false}
+                onChange={() => setTempField("gender", false)}
+                className="border-[1px]"
+              />{" "}
+              암
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="gender"
+                checked={tempCow.gender === true}
+                className="border-[1px]"
+                onChange={() => setTempField("gender", true)}
+              />{" "}
+              수
+            </label>
+          </div>
         </div>
         <button
           className="border-[1px] w-[50px]"

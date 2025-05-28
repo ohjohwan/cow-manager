@@ -29,16 +29,32 @@ export default function Modal({ toggle, cow }: EditModalProps) {
         <div className="flex justify-between ">
           <div className="flex flex-col justify-center items-center">
             <h3>개체 번호</h3>
-            <div className="border-[1px] w-[180px] h-[26px]"></div>
+            <div className="flex justify-center border-[1px] w-[180px] h-[26px]">
+              {cow.number}
+            </div>
           </div>
           <div className="flex flex-col justify-center items-center">
             <h3>암수 여부</h3>
             <div className="border-[1px] w-[180px] flex justify-center gap-[20px] h-[26px]">
               <label>
-                <input type="radio" className="border-[1px]" />암
+                <input
+                  type="radio"
+                  name="gender"
+                  checked={editData.gender === false}
+                  onChange={() => handleChange("gender", false)}
+                  className="border-[1px]"
+                />
+                암
               </label>
               <label>
-                <input type="radio" className="border-[1px]" />수
+                <input
+                  type="radio"
+                  name="gender"
+                  checked={editData.gender === true}
+                  onChange={() => handleChange("gender", true)}
+                  className="border-[1px]"
+                />
+                수
               </label>
             </div>
           </div>
