@@ -1,6 +1,7 @@
-import { Cow, useCowStore } from "@/store/useCattleDeliveryStore";
-import { EditableCow } from "@/store/useCattleDeliveryStore";
+import { EditableCow, useCowStore, Cow } from "@/store/useCattleDeliveryStore";
 import { useState } from "react";
+import Calendar from "@/components/Calendar";
+import { calculateDates } from "@/utils/inseminationDateUtils";
 
 interface EditModalProps {
   toggle: () => void;
@@ -8,8 +9,9 @@ interface EditModalProps {
 }
 
 export default function Modal({ toggle, cow }: EditModalProps) {
-  const { editCow } = useCowStore();
+  const { editCow, setTempField, tempCow } = useCowStore();
   const [editData, setEditData] = useState<EditableCow>({ ...cow });
+  const [showCalendar, setShowCalendar] = useState(false); // 달력 표시 토글 상태
 
   const handleChange = (field: keyof EditableCow, value: string | boolean) => {
     setEditData((prev) => ({
@@ -21,6 +23,17 @@ export default function Modal({ toggle, cow }: EditModalProps) {
   const handleSave = () => {
     editCow(editData);
     toggle();
+  };
+
+  const handleDateSelect = (date: string) => {
+    setTempField("inseminationDate", date);
+    setShowCalendar(false); // 날짜 선택 후 캘린더 닫기
+  };
+
+  const Insemination_dueDate_calculator = (date: Date) => {
+    const { nextInsemination, dueDate } = calculateDates(date);
+    setTempField("nextInseminationDate", nextInsemination);
+    setTempField("expectedDeliveryDate", dueDate);
   };
 
   return (
@@ -97,9 +110,23 @@ export default function Modal({ toggle, cow }: EditModalProps) {
             <h3>백신 접종 차수</h3>
             <div className="w-[180px] border-[1px] h-[26px]"></div>
           </div>
-          <div className="flex flex-col justify-center items-center">
-            <h3>수정일</h3>
-            <div className="w-[180px] border-[1px] h-[26px]"></div>
+          <div>
+            <h3>수정 일자</h3>
+            <input
+              pattern="^\d+$/"
+              value={tempCow.inseminationDate}
+              required
+              onClick={() => setShowCalendar((prev) => !prev)}
+              readOnly
+              placeholder="수정 일자 선택"
+              className="border-[1px]"
+            />
+            {showCalendar && (
+              <Calendar
+                onDateSelect={handleDateSelect}
+                onDateObject={Insemination_dueDate_calculator}
+              />
+            )}
           </div>
         </div>
         <div className="flex justify-between items-center">

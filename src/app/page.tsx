@@ -1,13 +1,11 @@
 "use client";
 
-import Calendar from "@/components/Calendar";
 import { useState } from "react";
 import { useCowStore } from "@/store/useCattleDeliveryStore";
 import { Cow } from "@/store/useCattleDeliveryStore";
 import EditModal from "@/components/EditModal";
 
 export default function Home() {
-  const [showCalendar, setShowCalendar] = useState(false); // 달력 표시 토글 상태
   const { tempCow, setTempField, cowState, addCow, deleteCow, searchCow } =
     useCowStore();
   const [error, setError] = useState("");
@@ -15,11 +13,6 @@ export default function Home() {
   const [searchReturn, setSearchReturn] = useState<Cow | null>(null);
   const [editToggle, setEditToggle] = useState(false);
   const [selectedCow, setSelectedCow] = useState<Cow | null>(null);
-
-  const handleDateSelect = (date: string) => {
-    setTempField("inseminationDate", date);
-    setShowCalendar(false); // 날짜 선택 후 캘린더 닫기
-  };
 
   // 개체 번호 자동 포맷
   const handleFomatted = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,32 +60,6 @@ export default function Home() {
     }
   };
 
-  // 분만 예정일, 수정일 계산식
-  const Insemination_dueDate_Calculator = (date: Date) => {
-    const pad = (n: number) => String(n).padStart(2, "0");
-
-    const formatNextDate = new Date(date);
-    formatNextDate.setDate(formatNextDate.getDate() + 20);
-    formatNextDate.setMonth(formatNextDate.getMonth() + 1);
-
-    const formatDueDate = new Date(date);
-    formatDueDate.setDate(formatDueDate.getDate() + 10);
-    formatDueDate.setDate(formatDueDate.getMonth() - 3);
-
-    // 다음 수정일
-    const nextInsemination = `${formatNextDate.getFullYear()}-${pad(
-      formatNextDate.getMonth()
-    )}-${pad(formatNextDate.getDate())}`;
-
-    // 분만 예정일
-    const dueDate = `${formatDueDate.getFullYear()}-${
-      formatDueDate.getMonth() - 3
-    }-${formatDueDate.getDate() + 10}`;
-
-    setTempField("nextInseminationDate", nextInsemination);
-    setTempField("expectedDeliveryDate", dueDate);
-  };
-
   const isValid =
     Object.values(tempCow).every((value) => value !== "") && !error;
 
@@ -127,24 +94,6 @@ export default function Home() {
             inputMode="numeric"
           ></input>
           {error && <p>{error}</p>}
-        </div>
-        <div>
-          <h3>수정 일자</h3>
-          <input
-            pattern="^\d+$/"
-            value={tempCow.inseminationDate}
-            required
-            onClick={() => setShowCalendar((prev) => !prev)}
-            readOnly
-            placeholder="수정 일자 선택"
-            className="border-[1px]"
-          />
-          {showCalendar && (
-            <Calendar
-              onDateSelect={handleDateSelect}
-              onDateObject={Insemination_dueDate_Calculator}
-            />
-          )}
         </div>
         <div className="flex flex-col justify-center items-center">
           <h3>암수 여부</h3>
