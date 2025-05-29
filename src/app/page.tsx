@@ -61,7 +61,8 @@ export default function Home() {
   };
 
   const isValid =
-    Object.values(tempCow).every((value) => value !== "") && !error;
+    Object.values(tempCow).every((value) => value !== "" && value !== null) &&
+    !error;
 
   const handleSearchCow = (cowNumber: string) => {
     const result = searchCow(cowNumber);
