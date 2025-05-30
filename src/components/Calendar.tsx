@@ -78,7 +78,7 @@ export default function Calendar({
   };
 
   return (
-    <div className="w-[500px] flex flex-col items-center justify-center">
+    <div className="w-[300px] flex flex-col items-center justify-center z-50">
       <div className="flex justify-center">
         {/* 상단 헤더 */}
         <button onClick={handlePrevMonth}>◀ 이전</button>

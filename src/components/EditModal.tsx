@@ -37,7 +37,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
   };
 
   return (
-    <div className="flex justify-center items-center m-auto fixed inset-0 bg-black/50 z-50">
+    <div className="flex justify-center items-center m-auto fixed inset-0 bg-black/50 z-40">
       <div className="bg-gray-500 w-[500px] h-[500px] p-[50px] relative flex flex-col gap-[40px]">
         <div className="flex justify-between ">
           <div className="flex flex-col justify-center items-center">
@@ -110,33 +110,36 @@ export default function Modal({ toggle, cow }: EditModalProps) {
             <h3>백신 접종 차수</h3>
             <div className="w-[180px] border-[1px] h-[26px]"></div>
           </div>
-          <div>
+          <div className="flex flex-col justify-center items-center relative">
             <h3>수정 일자</h3>
-            <input
-              pattern="^\d+$/"
-              value={tempCow.inseminationDate}
-              required
+            <div
               onClick={() => setShowCalendar((prev) => !prev)}
-              readOnly
-              placeholder="수정 일자 선택"
-              className="border-[1px]"
-            />
+              className="relative border-[1px] text-center w-[180px] h-[27px]"
+            >
+              {tempCow.inseminationDate ?? ""}
+            </div>
             {showCalendar && (
-              <Calendar
-                onDateSelect={handleDateSelect}
-                onDateObject={Insemination_dueDate_calculator}
-              />
+              <div className="absolute top-[50px] bg-black">
+                <Calendar
+                  onDateSelect={handleDateSelect}
+                  onDateObject={Insemination_dueDate_calculator}
+                />
+              </div>
             )}
           </div>
         </div>
         <div className="flex justify-between items-center">
           <div className="flex flex-col justify-center items-center">
             <h3>분만 예정일</h3>
-            <div className="w-[180px] border-[1px] h-[26px]"></div>
+            <div className="w-[180px] border-[1px] h-[26px] text-center">
+              {tempCow.expectedDeliveryDate}
+            </div>
           </div>
           <div className="flex flex-col justify-center items-center">
             <h3>다음 수정일</h3>
-            <div className="w-[180px] border-[1px] h-[26px]"></div>
+            <div className="w-[180px] border-[1px] h-[26px] text-center">
+              {tempCow.nextInseminationDate}
+            </div>
           </div>
         </div>
         <button
