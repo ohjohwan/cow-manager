@@ -3,8 +3,8 @@ export const calculateDates = (inseminationDate: Date) => {
   const pad = (n: number) => String(n).padStart(2, "0");
 
   const formatNextDate = new Date(inseminationDate);
-  formatNextDate.setDate(formatNextDate.getDate() + 20);
   formatNextDate.setMonth(formatNextDate.getMonth() + 1);
+  formatNextDate.setDate(formatNextDate.getDate() + 20);
 
   const formatDueDate = new Date(inseminationDate);
   formatDueDate.setMonth(formatDueDate.getMonth() - 3);
@@ -21,4 +21,20 @@ export const calculateDates = (inseminationDate: Date) => {
       formatDueDate.getMonth() + 1
     }-${formatDueDate.getDate()}`,
   };
+};
+
+// 개체 개월 수 계산식
+export const ageCalculator = (birthDate: Date | string): number => {
+  const birth = typeof birthDate === "string" ? new Date(birthDate) : birthDate;
+  const today = new Date();
+
+  let years = today.getFullYear() - birth.getFullYear();
+  let months = today.getMonth() - birth.getMonth();
+
+  if (months < 0) {
+    years -= 1;
+    months += 12;
+  }
+
+  return years * 12 + months;
 };

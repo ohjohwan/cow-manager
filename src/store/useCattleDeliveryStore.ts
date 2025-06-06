@@ -4,11 +4,13 @@ export interface Cow {
   number: string; // 개체 번호
   gender: boolean | null;
   inseminationDate?: string; // 수정 일자
+  inseminationHistory?: string[]; // 수정 차수
   expectedDeliveryDate?: string; // 분만 일자
-  nextInseminationDate?: string; // 다음 수정 일자자
+  nextInseminationDate?: string; // 다음 수정 일자
+  birth?: string;
   age?: string; // 개체 나이
   vaccineCheck?: boolean; // 백신 접종 여부
-  vaccineDose?: string[] | string; // 백신 접종 차수
+  vaccinationHistory?: string[]; // 백신 접종 차수
 }
 
 export type EditableCow = {
@@ -16,11 +18,14 @@ export type EditableCow = {
 } & Partial<Omit<Cow, "number">>;
 
 interface CowStoreState {
-  cowState: Cow[]; // 소 정보 배열
+  // 소 정보 배열
+  cowState: Cow[];
 
-  tempCow: Cow; // 현재 입력 중인 소 정보
+  // 현재 입력 중인 소 정보
+  tempCow: Cow;
 
-  setTempField: (field: keyof Cow, value: string | boolean) => void;
+  // 개체 정보 수정
+  setTempField: (field: keyof Cow, value: string | string[] | boolean) => void;
 
   // 개체 추가
   addCow: () => void;
