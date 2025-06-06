@@ -8,8 +8,13 @@ interface EditModalProps {
   cow: Cow;
 }
 
+interface DeleteProps {
+  field: "inseminationHistory" | "vaccinationHistory";
+  index: number;
+}
+
 export default function Modal({ toggle, cow }: EditModalProps) {
-  const { editCow, tempCow, setTempField } = useCowStore();
+  const { editCow, tempCow, setTempField, deleteCowHistory } = useCowStore();
   const [editData, setEditData] = useState<EditableCow>({ ...cow });
   const [birthCalendar, setBirthCalendar] = useState(false);
   const [inseminationCalendar, setInseminationCalendar] = useState(false); // 달력 표시 토글 상태
@@ -53,6 +58,10 @@ export default function Modal({ toggle, cow }: EditModalProps) {
       : [];
 
     setTempField("inseminationHistory", [...currentHistory, date]);
+  };
+
+  const handleInseminationDeleteHistory = ({ field, index }: DeleteProps) => {
+    deleteCowHistory(field, index);
   };
 
   return (
@@ -204,9 +213,19 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                     <div>
                       {index + 1}차 수정 : {date}
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex">
                       <button className="underline">수정</button>
-                      <button className="underline">삭제</button>
+                      <button
+                        className="underline"
+                        onClick={() =>
+                          handleInseminationDeleteHistory({
+                            field: "inseminationHistory",
+                            index,
+                          })
+                        }
+                      >
+                        삭제
+                      </button>
                     </div>
                   </div>
                 );
@@ -225,7 +244,6 @@ export default function Modal({ toggle, cow }: EditModalProps) {
             </div>
           </div>
         </div>
-
         <button
           className="absolute bottom-[10px] right-[10px]"
           onClick={handleSave}

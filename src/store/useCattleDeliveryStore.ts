@@ -33,6 +33,12 @@ interface CowStoreState {
   // 개체 삭제
   deleteCow: (cowNumber: string) => void;
 
+  // 개체 수정 내역 삭제
+  deleteCowHistory: (
+    field: "inseminationHistory" | "vaccinationHistory",
+    index: number
+  ) => void;
+
   // 개체 수정
   editCow: (payload: EditableCow) => void;
 
@@ -69,6 +75,25 @@ export const useCowStore = create<CowStoreState>((set, get) => ({
     set((state) => ({
       cowState: state.cowState.filter((cow) => cow.number !== cowNumber),
     })),
+
+  deleteCowHistory: (
+    field: "inseminationHistory" | "vaccinationHistory",
+    index: number
+  ) =>
+    set((state) => {
+      const prevArray = Array.isArray(state.tempCow[field])
+        ? [...(state.tempCow[field] as string[])]
+        : [];
+
+      const newArray = prevArray.filter((_, i) => i !== index);
+
+      return {
+        tempCow: {
+          ...state.tempCow,
+          [field]: newArray,
+        },
+      };
+    }),
 
   editCow: (payload) =>
     set((state) => ({
