@@ -4,6 +4,7 @@ export interface Cow {
   number: string; // 개체 번호
   gender: boolean | null;
   inseminationDate?: string; // 수정 일자
+  vaccinationDate?: string;
   inseminationHistory?: string[]; // 수정 차수
   expectedDeliveryDate?: string; // 분만 일자
   nextInseminationDate?: string; // 다음 수정 일자

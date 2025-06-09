@@ -17,7 +17,8 @@ export default function Modal({ toggle, cow }: EditModalProps) {
   const { editCow, tempCow, setTempField, deleteCowHistory } = useCowStore();
   const [editData, setEditData] = useState<EditableCow>({ ...cow });
   const [birthCalendar, setBirthCalendar] = useState(false);
-  const [inseminationCalendar, setInseminationCalendar] = useState(false); // 달력 표시 토글 상태
+  const [inseminationCalendar, setInseminationCalendar] = useState(false);
+  const [vaccinationCalendar, setVaccinationCalendar] = useState(false);
 
   const handleChange = (field: keyof EditableCow, value: string | boolean) => {
     setEditData((prev) => ({
@@ -33,7 +34,12 @@ export default function Modal({ toggle, cow }: EditModalProps) {
 
   const handleInseminationCalendar = (date: string) => {
     setTempField("inseminationDate", date);
-    setInseminationCalendar(false); // 날짜 선택 후 캘린더 닫기
+    setInseminationCalendar(false);
+  };
+
+  const handleVaccinationCalendar = (date: string) => {
+    setTempField("vaccinationDate", date);
+    setVaccinationCalendar(false);
   };
 
   const Insemination_dueDate_calculator = (date: Date) => {
@@ -60,7 +66,15 @@ export default function Modal({ toggle, cow }: EditModalProps) {
     setTempField("inseminationHistory", [...currentHistory, date]);
   };
 
-  const handleInseminationDeleteHistory = ({ field, index }: DeleteProps) => {
+  const handleVaccinationHistory = (date: string) => {
+    const currentHistory = Array.isArray(tempCow.vaccinationHistory)
+      ? tempCow.vaccinationHistory
+      : [];
+
+    setTempField("vaccinationHistory", [...currentHistory, date]);
+  };
+
+  const handleDeleteHistory = ({ field, index }: DeleteProps) => {
     deleteCowHistory(field, index);
   };
 
@@ -191,15 +205,34 @@ export default function Modal({ toggle, cow }: EditModalProps) {
             </div>
           </div>
           <div>
-            <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-col justify-center items-center relative">
               <h3>백신 접종</h3>
               <div className="flex justify-between w-[180px] h-[27px] border-[1px]">
                 <button
+                  onClick={() => setVaccinationCalendar((prev) => !prev)}
                   className="w-[140px]"
                   disabled={editData.vaccineCheck === !true}
-                ></button>
-                <button className="border-[1px]">추가</button>
+                >
+                  {tempCow.vaccinationDate}
+                </button>
+                <button
+                  className="border-[1px]"
+                  onClick={() => {
+                    if (tempCow.vaccinationDate) {
+                      handleVaccinationHistory(tempCow.vaccinationDate);
+                    } else {
+                      alert("백신 접종 날짜를 선택해 주세요.");
+                    }
+                  }}
+                >
+                  추가
+                </button>
               </div>
+              {vaccinationCalendar && (
+                <div className="absolute top-[50px] bg-black">
+                  <Calendar onDateSelect={handleVaccinationCalendar} />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -218,7 +251,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                       <button
                         className="underline"
                         onClick={() =>
-                          handleInseminationDeleteHistory({
+                          handleDeleteHistory({
                             field: "inseminationHistory",
                             index,
                           })
@@ -236,12 +269,28 @@ export default function Modal({ toggle, cow }: EditModalProps) {
         </div>
         <div className="flex flex-col">
           접종 차수
-          <div className="flex items-center justify-center bg-white h-[150px] w-full text-black gap-[10px]">
-            <p className="block">1차 수정 : 2025.05.31</p>
-            <div className="flex gap-[5px]">
-              <button className="underline">수정</button>
-              <button className="underline">삭제</button>
-            </div>
+          <div className="flex flex-col items-center justify-center bg-white h-[150px] w-full text-black gap-[10px]">
+            {(tempCow.vaccinationHistory ?? []).map((date, index) => {
+              return (
+                <div key={index} className="flex gap-[5px]">
+                  <div>
+                    {index + 1}차 접종 : {date}
+                  </div>
+                  <button className="underline">수정</button>
+                  <button
+                    className="underline"
+                    onClick={() =>
+                      handleDeleteHistory({
+                        field: "vaccinationHistory",
+                        index,
+                      })
+                    }
+                  >
+                    삭제
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
         <button

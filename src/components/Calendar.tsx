@@ -5,8 +5,8 @@ export default function Calendar({
   onDateSelect,
   onDateObject,
 }: {
-  onDateSelect: (date: string) => void;
-  onDateObject: (date: Date) => void;
+  onDateSelect?: (date: string) => void;
+  onDateObject?: (date: Date) => void;
 }) {
   const [currentYear, setYear] = useState(new Date().getFullYear()); // 현재 연도
   const [currentMonth, setMonth] = useState(new Date().getMonth()); // 현재 월
@@ -73,8 +73,8 @@ export default function Calendar({
 
     const dayObject = new Date(currentYear, currentMonth, day);
 
-    onDateObject(dayObject);
-    onDateSelect(formattedDate);
+    onDateObject?.(dayObject);
+    onDateSelect?.(formattedDate);
   };
 
   return (
