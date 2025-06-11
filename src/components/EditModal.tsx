@@ -89,7 +89,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
             </div>
           </div>
           <div className="flex flex-col justify-center items-center">
-            <h3>암수 여부</h3>
+            <h3>성별</h3>
             <div className="border-[1px] w-[180px] flex justify-center gap-[20px] h-[26px]">
               <label>
                 <input
@@ -172,7 +172,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
             </div>
           </div>
           <div className="flex flex-col justify-center items-center">
-            <h3>다음 수정일</h3>
+            <h3>재발정일</h3>
             <div className="w-[180px] border-[1px] h-[26px] text-center">
               {tempCow.nextInseminationDate}
             </div>
@@ -206,12 +206,19 @@ export default function Modal({ toggle, cow }: EditModalProps) {
           </div>
           <div>
             <div className="flex flex-col justify-center items-center relative">
-              <h3>백신 접종</h3>
+              <h3>백신 접종일</h3>
               <div className="flex justify-between w-[180px] h-[27px] border-[1px]">
                 <button
-                  onClick={() => setVaccinationCalendar((prev) => !prev)}
+                  onClick={() => {
+                    if (editData.vaccineCheck) {
+                      setVaccinationCalendar((prev) => !prev);
+                    }
+                  }}
                   className="w-[140px]"
-                  disabled={editData.vaccineCheck === !true}
+                  disabled={
+                    editData.vaccineCheck === !true &&
+                    editData.vaccineCheck === undefined
+                  }
                 >
                   {tempCow.vaccinationDate}
                 </button>
@@ -236,6 +243,14 @@ export default function Modal({ toggle, cow }: EditModalProps) {
             </div>
           </div>
         </div>
+        <div className="flex justify-between">
+          <div className="text-center">
+            부<input className="border-[1px]"></input>
+          </div>
+          <div className="text-center">
+            모<input className="border-[1px]"></input>
+          </div>
+        </div>
         <div className="flex flex-col">
           수정 차수
           <div className="flex items-center justify-center bg-white h-[150px] w-full text-black gap-[10px]">
@@ -246,6 +261,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                     <div>
                       {index + 1}차 수정 : {date}
                     </div>
+
                     <div className="flex">
                       <button className="underline">수정</button>
                       <button
@@ -260,6 +276,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                         삭제
                       </button>
                     </div>
+                    <input className="w-[150px] border-[1px]"></input>
                   </div>
                 );
               })}
@@ -276,6 +293,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                   <div>
                     {index + 1}차 접종 : {date}
                   </div>
+
                   <button className="underline">수정</button>
                   <button
                     className="underline"

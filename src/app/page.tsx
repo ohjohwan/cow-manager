@@ -80,10 +80,10 @@ export default function Home() {
       {editToggle && selectedCow && (
         <EditModal toggle={handleEditModal} cow={selectedCow} />
       )}
-      <p className="text-[50px] text-center">소 개체 등록</p>
-      <div className="text-white text-[15px] flex gap-[20px]">
-        <div>
-          <h3>개체 번호</h3>
+      <p className="text-[50px] text-center">개체 등록</p>
+      <div className="text-[15px] flex justify-center gap-[20px]">
+        <div className="text-center bg-bg">
+          <h3 className="text-fg">개체 번호</h3>
           <input
             pattern="^\d+$"
             value={tempCow.number}
@@ -122,13 +122,31 @@ export default function Home() {
           </div>
         </div>
         <button
-          className="border-[1px] w-[50px]"
+          className="border-[1px] w-[100px] h-[40px]"
           onClick={handleAddCow}
           disabled={!isValid}
         >
-          등록
+          등록하기
         </button>
       </div>
+
+      <p className="text-center text-[50px]">개체 검색</p>
+      <div className="flex justify-center">
+        <input
+          value={searchCowNumber}
+          className="border-[1px] w-[300px]"
+          onChange={(e) => setSearchCowNumber(handleFomatted(e))}
+          maxLength={11}
+          minLength={11}
+        ></input>
+        <button
+          className="block w-[40px] border-[1px]"
+          onClick={() => handleSearchCow(searchCowNumber)}
+        >
+          검색
+        </button>
+      </div>
+
       <p className="text-[50px] text-center">등록 개체</p>
       <div className="text-center w-[500px] flex flex-col justify-center items-center gap-[15px] mx-auto">
         {cowState.map((cow) => {
@@ -154,22 +172,6 @@ export default function Home() {
         })}
       </div>
 
-      <p className="text-center text-[50px]">개체 번호 검색</p>
-      <div className="flex gap-[15px]">
-        <input
-          value={searchCowNumber}
-          className="border-[1px] w-full m-auto"
-          onChange={(e) => setSearchCowNumber(handleFomatted(e))}
-          maxLength={11}
-          minLength={11}
-        ></input>
-        <button
-          className="block w-[40px] border-[1px]"
-          onClick={() => handleSearchCow(searchCowNumber)}
-        >
-          검색
-        </button>
-      </div>
       <div>
         {searchReturn && (
           <div className="flex gap-[20px]">
