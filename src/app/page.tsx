@@ -10,7 +10,7 @@ export default function Home() {
     useCowStore();
   const [error, setError] = useState("");
   const [searchCowNumber, setSearchCowNumber] = useState("");
-  const [searchReturn, setSearchReturn] = useState<Cow | null>(null);
+  const [searchReturn, setSearchReturn] = useState<Cow[] | null>(null);
   const [editToggle, setEditToggle] = useState(false);
   const [selectedCow, setSelectedCow] = useState<Cow | null>(null);
 
@@ -23,7 +23,7 @@ export default function Home() {
       autoFormatted = `${value.slice(0, 4)} ${value.slice(4, 8)} ${value.slice(
         8
       )}`;
-    } else if (value.length > 5) {
+    } else if (value.length > 4) {
       autoFormatted = `${value.slice(0, 4)} ${value.slice(4, 8)}`;
     } else {
       autoFormatted = `${value.slice(0, value.length)}`;
@@ -173,25 +173,26 @@ export default function Home() {
       </div>
 
       <div>
-        {searchReturn && (
-          <div className="flex gap-[20px]">
-            <div>{searchReturn.number}</div>
-            <div className="flex gap-[10px]">
-              <button
-                className="border-[1px]"
-                onClick={() => selectedCow && handleEditModal(selectedCow)}
-              >
-                수정
-              </button>
-              <button
-                className="border-[1px]"
-                onClick={() => deleteCow(searchReturn.number)}
-              >
-                삭제
-              </button>
+        {searchReturn &&
+          searchReturn.map((result) => (
+            <div key={result.number} className="flex gap-[20px]">
+              <div>{result.number}</div>
+              <div className="flex gap-[10px]">
+                <button
+                  className="border-[1px]"
+                  onClick={() => selectedCow && handleEditModal(selectedCow)}
+                >
+                  수정
+                </button>
+                <button
+                  className="border-[1px]"
+                  onClick={() => deleteCow(result.number)}
+                >
+                  삭제
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          ))}
       </div>
     </>
   );

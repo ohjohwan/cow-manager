@@ -1,4 +1,8 @@
-import { EditableCow, useCowStore, Cow } from "@/store/useCattleDeliveryStore";
+import {
+  useCowStore,
+  Cow,
+  InseminationRecord,
+} from "@/store/useCattleDeliveryStore";
 import { useState } from "react";
 import Calendar from "@/components/Calendar";
 import { calculateDates, ageCalculator } from "@/utils/dateCalculatorUtils";
@@ -15,25 +19,26 @@ interface DeleteProps {
 
 export default function Modal({ toggle, cow }: EditModalProps) {
   const { editCow, tempCow, setTempField, deleteCowHistory } = useCowStore();
-  const [editData, setEditData] = useState<EditableCow>({ ...cow });
   const [birthCalendar, setBirthCalendar] = useState(false);
   const [inseminationCalendar, setInseminationCalendar] = useState(false);
   const [vaccinationCalendar, setVaccinationCalendar] = useState(false);
+  const [inseminationDate, setInseminationDate] = useState("");
+  const [expectedDeliveryDate, setExpectedDeliveryDate] = useState("");
+  const [nextInseminationDate, setNextInseminationDate] = useState("");
+  const [drugName, setDrugName] = useState("");
 
-  const handleChange = (field: keyof EditableCow, value: string | boolean) => {
-    setEditData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const handleChange = (field: keyof Cow, value: Cow[keyof Cow]) => {
+    setTempField(field, value);
+    console.log("tempCow.gender", tempCow.gender); // null / true / false / undefined?
   };
 
   const handleSave = () => {
-    editCow(editData);
+    editCow(tempCow);
     toggle();
   };
 
   const handleInseminationCalendar = (date: string) => {
-    setTempField("inseminationDate", date);
+    setInseminationDate(date);
     setInseminationCalendar(false);
   };
 
@@ -44,8 +49,8 @@ export default function Modal({ toggle, cow }: EditModalProps) {
 
   const Insemination_dueDate_calculator = (date: Date) => {
     const { nextInsemination, dueDate } = calculateDates(date);
-    setTempField("nextInseminationDate", nextInsemination);
-    setTempField("expectedDeliveryDate", dueDate);
+    setNextInseminationDate(nextInsemination);
+    setExpectedDeliveryDate(dueDate);
   };
 
   const handleBirthCalendar = (date: string) => {
@@ -58,12 +63,23 @@ export default function Modal({ toggle, cow }: EditModalProps) {
     setTempField("age", `${age}`);
   };
 
-  const handleInseminationHistory = (date: string) => {
-    const currentHistory = Array.isArray(tempCow.inseminationHistory)
-      ? tempCow.inseminationHistory
+  const handleAddInseminationRecord = () => {
+    const currentHistory: InseminationRecord[] = Array.isArray(
+      tempCow.inseminationHistory
+    )
+      ? (tempCow.inseminationHistory as InseminationRecord[])
       : [];
 
-    setTempField("inseminationHistory", [...currentHistory, date]);
+    const newRecord: InseminationRecord = {
+      inseminationDate,
+      expectedDeliveryDate,
+      nextInseminationDate,
+      drugName,
+    };
+
+    if (inseminationDate !== "") {
+      setTempField("inseminationHistory", [...currentHistory, newRecord]);
+    }
   };
 
   const handleVaccinationHistory = (date: string) => {
@@ -78,9 +94,14 @@ export default function Modal({ toggle, cow }: EditModalProps) {
     deleteCowHistory(field, index);
   };
 
+  const handleDrugNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setDrugName(value);
+  };
+
   return (
-    <div className="flex justify-center items-center m-auto fixed inset-0 bg-black/50 z-40">
-      <div className="bg-gray-500 w-[500px] h-[900px] p-[50px] relative flex flex-col gap-[40px]">
+    <div className="flex justify-center items-center m-auto fixed inset-0 bg-black/50 z-40 ">
+      <div className="bg-gray-500 w-[1000px] h-[900px] p-[50px] relative flex flex-col gap-[40px] overflow-scroll">
         <div className="flex justify-between ">
           <div className="flex flex-col justify-center items-center">
             <h3>개체 번호</h3>
@@ -95,7 +116,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                 <input
                   type="radio"
                   name="gender"
-                  checked={editData.gender === false}
+                  checked={tempCow.gender === false}
                   onChange={() => handleChange("gender", false)}
                   className="border-[1px]"
                 />
@@ -105,7 +126,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                 <input
                   type="radio"
                   name="gender"
-                  checked={editData.gender === true}
+                  checked={tempCow.gender === true}
                   onChange={() => handleChange("gender", true)}
                   className="border-[1px]"
                 />
@@ -139,13 +160,13 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                 onClick={() => setInseminationCalendar((prev) => !prev)}
                 className="relative text-center w-[140px] h-[27px]"
               >
-                {tempCow.inseminationDate}
+                {inseminationDate}
               </div>
               <button
                 className="border-[1px]"
                 onClick={() => {
-                  if (tempCow.inseminationDate) {
-                    handleInseminationHistory(tempCow.inseminationDate);
+                  if (inseminationDate) {
+                    handleAddInseminationRecord();
                   } else {
                     alert("수정 일자를 먼저 선택해주세요.");
                   }
@@ -168,13 +189,13 @@ export default function Modal({ toggle, cow }: EditModalProps) {
           <div className="flex flex-col justify-center items-center">
             <h3>분만 예정일</h3>
             <div className="w-[180px] border-[1px] h-[26px] text-center">
-              {tempCow.expectedDeliveryDate}
+              {expectedDeliveryDate}
             </div>
           </div>
           <div className="flex flex-col justify-center items-center">
             <h3>재발정일</h3>
             <div className="w-[180px] border-[1px] h-[26px] text-center">
-              {tempCow.nextInseminationDate}
+              {nextInseminationDate}
             </div>
           </div>
         </div>
@@ -186,7 +207,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                 <input
                   type="radio"
                   name="vaccineCheck"
-                  checked={editData.vaccineCheck === true}
+                  checked={tempCow.vaccineCheck === true}
                   onChange={() => handleChange("vaccineCheck", true)}
                   className="border-[1px]"
                 />
@@ -196,7 +217,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                 <input
                   type="radio"
                   name="vaccineCheck"
-                  checked={editData.vaccineCheck === false}
+                  checked={tempCow.vaccineCheck === false}
                   onChange={() => handleChange("vaccineCheck", false)}
                   className="border-[1px]"
                 />
@@ -210,14 +231,14 @@ export default function Modal({ toggle, cow }: EditModalProps) {
               <div className="flex justify-between w-[180px] h-[27px] border-[1px]">
                 <button
                   onClick={() => {
-                    if (editData.vaccineCheck) {
+                    if (tempCow.vaccineCheck) {
                       setVaccinationCalendar((prev) => !prev);
                     }
                   }}
                   className="w-[140px]"
                   disabled={
-                    editData.vaccineCheck === !true &&
-                    editData.vaccineCheck === undefined
+                    tempCow.vaccineCheck === !true &&
+                    tempCow.vaccineCheck === undefined
                   }
                 >
                   {tempCow.vaccinationDate}
@@ -253,13 +274,22 @@ export default function Modal({ toggle, cow }: EditModalProps) {
         </div>
         <div className="flex flex-col">
           수정 차수
-          <div className="flex items-center justify-center bg-white h-[150px] w-full text-black gap-[10px]">
-            <div className="block">
-              {(tempCow.inseminationHistory ?? []).map((date, index) => {
+          <div className="flex flex-col items-center justify-center bg-white h-[150px] w-full text-black gap-[10px] relative">
+            <div className="flex grow-0 justify-around items-center text-center w-full absolute top-0">
+              <div className="border-[1px] w-full ">차수</div>
+              <div className="w-full">수정일</div>
+              <div className="w-full">분만일</div>
+              <div className="w-full">다음 수정일</div>
+              <div className="w-full">약품명</div>
+            </div>
+            <div className="block overflow-scroll w-full">
+              {(tempCow.inseminationHistory ?? []).map((record, index) => {
                 return (
                   <div key={index} className="flex gap-[15px]">
                     <div>
-                      {index + 1}차 수정 : {date}
+                      {`${index + 1}차 수정 : ${record.inseminationDate} |
+                      ${record.expectedDeliveryDate} |
+                      ${record.nextInseminationDate}`}
                     </div>
 
                     <div className="flex">
@@ -276,7 +306,13 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                         삭제
                       </button>
                     </div>
-                    <input className="w-[150px] border-[1px]"></input>
+                    <input
+                      value={record.drugName ?? ""}
+                      className="w-[150px] border-[1px]"
+                      placeholder="약품"
+                      maxLength={10}
+                      onChange={(e) => handleDrugNameChange(e)}
+                    />
                   </div>
                 );
               })}
@@ -306,6 +342,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                   >
                     삭제
                   </button>
+                  <input className="border-[1px]" placeholder="정액 번호" />
                 </div>
               );
             })}

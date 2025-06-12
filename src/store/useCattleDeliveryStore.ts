@@ -1,14 +1,17 @@
 import { create } from "zustand";
 
+export interface InseminationRecord {
+  inseminationDate: string;
+  expectedDeliveryDate: string;
+  nextInseminationDate: string;
+  drugName: string;
+}
 export interface Cow {
   number: string; // 개체 번호
-  gender: boolean | null;
-  inseminationDate?: string; // 수정 일자
-  vaccinationDate?: string;
-  inseminationHistory?: string[]; // 수정 차수
-  expectedDeliveryDate?: string; // 분만 일자
-  nextInseminationDate?: string; // 다음 수정 일자
-  birth?: string;
+  gender: boolean | null; // 성별
+  vaccinationDate?: string; // 백신 접종 일자 선택
+  inseminationHistory?: InseminationRecord[]; // 수정 차수
+  birth?: string; // 출생일
   age?: string; // 개체 나이
   vaccineCheck?: boolean; // 백신 접종 여부
   vaccinationHistory?: string[]; // 백신 접종 차수
@@ -22,11 +25,11 @@ interface CowStoreState {
   // 소 정보 배열
   cowState: Cow[];
 
-  // 현재 입력 중인 소 정보
+  // 현재 수정 중인 소 정보
   tempCow: Cow;
 
   // 개체 정보 수정
-  setTempField: (field: keyof Cow, value: string | string[] | boolean) => void;
+  setTempField: (field: keyof Cow, value: Cow[keyof Cow]) => void;
 
   // 개체 추가
   addCow: () => void;
@@ -104,5 +107,5 @@ export const useCowStore = create<CowStoreState>((set, get) => ({
     })),
 
   searchCow: (cowNumber) =>
-    get().cowState.find((cow) => cow.number === cowNumber),
+    get().cowState.filter((cow) => cow.number.includes(cowNumber)),
 }));
