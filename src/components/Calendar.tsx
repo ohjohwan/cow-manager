@@ -10,6 +10,12 @@ export default function Calendar({
 }) {
   const [currentYear, setYear] = useState(new Date().getFullYear()); // 현재 연도
   const [currentMonth, setMonth] = useState(new Date().getMonth()); // 현재 월
+  const [yearToggle, setYearToggle] = useState(false);
+
+  const years = Array.from(
+    { length: new Date().getFullYear() - 1999 },
+    (_, index) => 2000 + index
+  );
 
   // 해당 월의 첫 번째 날 요일 추출
   const getFirstDayOfMonth = (year: number, month: number) => {
@@ -45,6 +51,15 @@ export default function Calendar({
 
   const dates = createCalendarDates(currentYear, currentMonth);
 
+  const handleYearToggle = () => {
+    setYearToggle((prev) => !prev);
+  };
+
+  const handleSelectYear = (year: number) => {
+    setYear(year);
+    setYearToggle((prev) => !prev);
+  };
+
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
       // 1월이면 작년 12월로 변경
@@ -78,13 +93,24 @@ export default function Calendar({
   };
 
   return (
-    <div className="w-[300px] flex flex-col items-center justify-center z-50">
+    <div className="w-[300px] flex flex-col items-center justify-center">
       <div className="flex justify-center">
         {/* 상단 헤더 */}
+        <div className="relative flex flex-col gap-[20px]">
+          {currentYear}
+          {yearToggle && (
+            <div className="flex flex-col absolute top-[20px] h-[100px] bg-gray-400 overflow-y-scroll">
+              {years.map((year) => (
+                <button key={year} onClick={() => handleSelectYear(year)}>
+                  {year}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        <button onClick={handleYearToggle}>▼</button>
         <button onClick={handlePrevMonth}>◀ 이전</button>
-        <h2>
-          {currentYear}년 {currentMonth + 1}월
-        </h2>
+        <h2>{currentMonth + 1}월</h2>
         <button onClick={handleNextMonth}>다음 ▶</button>
       </div>
       <div className="w-[300px]">

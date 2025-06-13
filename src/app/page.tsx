@@ -75,6 +75,12 @@ export default function Home() {
     setEditToggle(!editToggle);
   };
 
+  const handleDeleteCow = (number: string) => {
+    const result = searchCow(number);
+    setSearchReturn(result ?? null);
+    deleteCow(number);
+  };
+
   return (
     <>
       {editToggle && selectedCow && (
@@ -186,7 +192,7 @@ export default function Home() {
                 </button>
                 <button
                   className="border-[1px]"
-                  onClick={() => deleteCow(result.number)}
+                  onClick={() => handleDeleteCow(result.number)}
                 >
                   삭제
                 </button>

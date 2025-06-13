@@ -115,7 +115,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
               <label>
                 <input
                   type="radio"
-                  name="gender"
+                  name="gender1"
                   checked={tempCow.gender === false}
                   onChange={() => handleChange("gender", false)}
                   className="border-[1px]"
@@ -125,7 +125,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
               <label>
                 <input
                   type="radio"
-                  name="gender"
+                  name="gender1"
                   checked={tempCow.gender === true}
                   onChange={() => handleChange("gender", true)}
                   className="border-[1px]"
@@ -176,7 +176,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
               </button>
             </div>
             {inseminationCalendar && (
-              <div className="absolute top-[50px] bg-black">
+              <div className="absolute top-[50px] bg-black z-50">
                 <Calendar
                   onDateSelect={handleInseminationCalendar}
                   onDateObject={Insemination_dueDate_calculator}
