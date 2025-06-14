@@ -76,9 +76,9 @@ export default function Home() {
   };
 
   const handleDeleteCow = (number: string) => {
+    deleteCow(number);
     const result = searchCow(number);
     setSearchReturn(result ?? null);
-    deleteCow(number);
   };
 
   return (
