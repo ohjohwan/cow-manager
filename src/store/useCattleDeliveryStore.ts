@@ -104,6 +104,10 @@ export const useCowStore = create<CowStoreState>((set, get) => ({
       cowState: state.cowState.map((cow) =>
         cow.number === payload.number ? { ...cow, ...payload } : cow
       ),
+      tempCow: {
+        number: "",
+        gender: null,
+      },
     })),
 
   searchCow: (cowNumber) =>

@@ -65,6 +65,10 @@ export default function Home() {
     !error;
 
   const handleSearchCow = (cowNumber: string) => {
+    if (cowNumber === "") {
+      alert("개체 번호를 입력해 주세요.");
+      return;
+    }
     const result = searchCow(cowNumber);
     setSearchReturn(result ?? null);
   };
@@ -82,100 +86,106 @@ export default function Home() {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-[30px]">
       {editToggle && selectedCow && (
         <EditModal toggle={handleEditModal} cow={selectedCow} />
       )}
-      <p className="text-[50px] text-center">개체 등록</p>
-      <div className="text-[15px] flex justify-center gap-[20px]">
-        <div className="text-center bg-bg">
-          <h3 className="text-fg">개체 번호</h3>
-          <input
-            pattern="^\d+$"
-            value={tempCow.number}
-            minLength={11}
-            maxLength={11}
-            className="border-[1px]"
-            placeholder="개체 번호 입력"
-            onChange={(e) => handleNumberCheck(e)}
-            inputMode="numeric"
-          ></input>
-          {error && <p>{error}</p>}
-        </div>
-        <div className="flex flex-col justify-center items-center">
-          <h3>암수 여부</h3>
-          <div className="border-[1px] w-[180px] flex justify-center gap-[20px] h-[26px]">
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                checked={tempCow.gender === false}
-                onChange={() => setTempField("gender", false)}
-                className="border-[1px]"
-              />{" "}
-              암
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                checked={tempCow.gender === true}
-                className="border-[1px]"
-                onChange={() => setTempField("gender", true)}
-              />{" "}
-              수
-            </label>
+      <div>
+        <p className="text-[50px]">개체 등록</p>
+        <div className="text-[15px] w-[500px] flex items-center gap-[20px] relative">
+          <div className="bg-bg">
+            <h3 className="text-fg text-[25px]">개체 번호</h3>
+            <input
+              pattern="^\d+$"
+              value={tempCow.number}
+              minLength={11}
+              maxLength={11}
+              className="border-[1px] h-[30px] focus:rounded-[50px] transition-all duration-500"
+              placeholder="개체 번호 입력"
+              onChange={(e) => handleNumberCheck(e)}
+              inputMode="numeric"
+            ></input>
+            {error && <p>{error}</p>}
           </div>
-        </div>
-        <button
-          className="border-[1px] w-[100px] h-[40px]"
-          onClick={handleAddCow}
-          disabled={!isValid}
-        >
-          등록하기
-        </button>
-      </div>
-
-      <p className="text-center text-[50px]">개체 검색</p>
-      <div className="flex justify-center">
-        <input
-          value={searchCowNumber}
-          className="border-[1px] w-[300px]"
-          onChange={(e) => setSearchCowNumber(handleFomatted(e))}
-          maxLength={11}
-          minLength={11}
-        ></input>
-        <button
-          className="block w-[40px] border-[1px]"
-          onClick={() => handleSearchCow(searchCowNumber)}
-        >
-          검색
-        </button>
-      </div>
-
-      <p className="text-[50px] text-center">등록 개체</p>
-      <div className="text-center w-[500px] flex flex-col justify-center items-center gap-[15px] mx-auto">
-        {cowState.map((cow) => {
-          return (
-            <div key={cow.number} className="flex gap-[20px]">
-              <div>{cow.number}</div>
-              <div className="flex gap-[10px]">
-                <button
+          <div className="flex flex-col">
+            <h3 className="text-[25px]">암수 여부</h3>
+            <div className="border-[1px] w-[180px] flex justify-center items-center gap-[20px] h-[30px]">
+              <label>
+                <input
+                  type="radio"
+                  name="gender"
+                  checked={tempCow.gender === false}
+                  onChange={() => setTempField("gender", false)}
                   className="border-[1px]"
-                  onClick={() => handleEditModal(cow)}
-                >
-                  수정
-                </button>
-                <button
+                />{" "}
+                암
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="gender"
+                  checked={tempCow.gender === true}
                   className="border-[1px]"
-                  onClick={() => deleteCow(cow.number)}
-                >
-                  삭제
-                </button>
-              </div>
+                  onChange={() => setTempField("gender", true)}
+                />{" "}
+                수
+              </label>
             </div>
-          );
-        })}
+          </div>
+          <button
+            className="border-[1px] w-[100px] h-[50px] absolute bottom-0 right-0"
+            onClick={handleAddCow}
+            disabled={!isValid}
+          >
+            등록하기
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <p className="text-[50px]">개체 검색</p>
+        <div className="flex">
+          <input
+            value={searchCowNumber}
+            className="border-[1px] w-[200px] h-[30px] focus:rounded-[50px] transition-all duration-500"
+            onChange={(e) => setSearchCowNumber(handleFomatted(e))}
+            maxLength={11}
+            minLength={11}
+          />
+          <button
+            className="block w-[40px] border-[1px]"
+            onClick={() => handleSearchCow(searchCowNumber)}
+          >
+            검색
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <p className="text-[50px]">등록 개체</p>
+        <div className="w-[500px] flex flex-col gap-[15px]">
+          {cowState.map((cow) => {
+            return (
+              <div key={cow.number} className="flex gap-[20px]">
+                <div>{cow.number}</div>
+                <div className="flex gap-[10px]">
+                  <button
+                    className="border-[1px]"
+                    onClick={() => handleEditModal(cow)}
+                  >
+                    수정
+                  </button>
+                  <button
+                    className="border-[1px]"
+                    onClick={() => deleteCow(cow.number)}
+                  >
+                    삭제
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div>
@@ -186,7 +196,7 @@ export default function Home() {
               <div className="flex gap-[10px]">
                 <button
                   className="border-[1px]"
-                  onClick={() => selectedCow && handleEditModal(selectedCow)}
+                  onClick={() => handleEditModal(result)}
                 >
                   수정
                 </button>
@@ -200,6 +210,6 @@ export default function Home() {
             </div>
           ))}
       </div>
-    </>
+    </div>
   );
 }

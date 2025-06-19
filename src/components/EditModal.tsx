@@ -27,9 +27,10 @@ export default function Modal({ toggle, cow }: EditModalProps) {
   const [nextInseminationDate, setNextInseminationDate] = useState("");
   const [drugName, setDrugName] = useState("");
 
+  const gender = tempCow.gender ?? cow.gender;
+
   const handleChange = (field: keyof Cow, value: Cow[keyof Cow]) => {
     setTempField(field, value);
-    console.log("tempCow.gender", tempCow.gender); // null / true / false / undefined?
   };
 
   const handleSave = () => {
@@ -116,7 +117,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                 <input
                   type="radio"
                   name="gender1"
-                  checked={tempCow.gender === false}
+                  checked={gender === false}
                   onChange={() => handleChange("gender", false)}
                   className="border-[1px]"
                 />
@@ -126,7 +127,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                 <input
                   type="radio"
                   name="gender1"
-                  checked={tempCow.gender === true}
+                  checked={gender === true}
                   onChange={() => handleChange("gender", true)}
                   className="border-[1px]"
                 />
