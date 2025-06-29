@@ -26,6 +26,7 @@ interface CowStoreState {
   cowState: Cow[];
   tempCow: Cow;
   setTempField: (field: keyof Cow, value: Cow[keyof Cow]) => void;
+  setTempCow: (cow: Cow) => void;
   addCow: () => void;
   deleteCow: (cowNumber: string) => void;
   deleteCowHistory: (
@@ -52,6 +53,8 @@ export const useCowStore = create<CowStoreState>()(
             [field]: value,
           },
         })),
+
+      setTempCow: (cow) => set(() => ({ tempCow: { ...cow } })),
 
       addCow: () =>
         set((state) => ({

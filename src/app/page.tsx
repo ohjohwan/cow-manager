@@ -7,8 +7,15 @@ import EditModal from "@/components/EditModal";
 import Image from "next/image";
 
 export default function Home() {
-  const { tempCow, setTempField, cowState, addCow, deleteCow, searchCow } =
-    useCowStore();
+  const {
+    tempCow,
+    setTempField,
+    setTempCow,
+    cowState,
+    addCow,
+    deleteCow,
+    searchCow,
+  } = useCowStore();
   const [error, setError] = useState("");
   const [searchCowNumber, setSearchCowNumber] = useState("");
   const [searchReturn, setSearchReturn] = useState<Cow[] | null>(null);
@@ -76,7 +83,10 @@ export default function Home() {
 
   // 개체 정보 수정 모달
   const handleEditModal = (cow?: Cow) => {
-    if (cow) setSelectedCow(cow);
+    if (cow) {
+      setTempCow(cow);
+      setSelectedCow(cow);
+    }
     setEditToggle(!editToggle);
   };
 
@@ -87,7 +97,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col gap-[30px]">
+    <div className="flex flex-col gap-[30px] w-[500px]">
       {editToggle && selectedCow && (
         <EditModal toggle={handleEditModal} cow={selectedCow} />
       )}
@@ -217,6 +227,7 @@ export default function Home() {
         </div>
       </div>
       <Image src="/farm.png" alt="축사 이미지" width={500} height={50} />
+      <Image src="/baby.png" alt="송아지 이미지" width={500} height={50} />
     </div>
   );
 }

@@ -283,7 +283,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
               <div className="w-full">다음 수정일</div>
               <div className="w-full">약품명</div>
             </div>
-            <div className="block overflow-scroll w-full">
+            <div className="block overflow-scroll-y w-full">
               {(tempCow.inseminationHistory ?? []).map((record, index) => {
                 return (
                   <div key={index} className="flex gap-[15px]">
