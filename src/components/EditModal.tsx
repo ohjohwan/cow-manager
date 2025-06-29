@@ -25,7 +25,6 @@ export default function Modal({ toggle, cow }: EditModalProps) {
   const [inseminationDate, setInseminationDate] = useState("");
   const [expectedDeliveryDate, setExpectedDeliveryDate] = useState("");
   const [nextInseminationDate, setNextInseminationDate] = useState("");
-  const [drugName, setDrugName] = useState("");
 
   const gender = tempCow.gender ?? cow.gender;
 
@@ -75,7 +74,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
       inseminationDate,
       expectedDeliveryDate,
       nextInseminationDate,
-      drugName,
+      drugName: "",
     };
 
     if (inseminationDate !== "") {
@@ -95,14 +94,18 @@ export default function Modal({ toggle, cow }: EditModalProps) {
     deleteCowHistory(field, index);
   };
 
-  const handleDrugNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setDrugName(value);
+  const handleDrugNameChange = (index: number, value: string) => {
+    const updatedHistory = [...(tempCow.inseminationHistory || [])];
+    updatedHistory[index] = {
+      ...updatedHistory[index],
+      drugName: value,
+    };
+    setTempField("inseminationHistory", updatedHistory);
   };
 
   return (
     <div className="flex justify-center items-center m-auto fixed inset-0 bg-black/50 z-40 ">
-      <div className="bg-gray-500 w-[1000px] h-[900px] p-[50px] relative flex flex-col gap-[40px] overflow-scroll">
+      <div className="bg-gray-500 w-[650px] h-[900px] p-[50px] relative flex flex-col gap-[40px] overflow-scroll">
         <div className="flex justify-between ">
           <div className="flex flex-col justify-center items-center">
             <h3>개체 번호</h3>
@@ -285,24 +288,42 @@ export default function Modal({ toggle, cow }: EditModalProps) {
         </div>
         <div className="flex flex-col">
           수정 차수
-          <div className="flex flex-col items-center justify-center bg-white h-[150px] w-full text-black gap-[10px] relative overflow-x-scroll">
-            <div className="flex grow-0 justify-around items-center text-center w-full absolute top-0">
-              <div className="border-[1px] w-full ">차수</div>
-              <div className="w-full">수정일</div>
-              <div className="w-full">분만일</div>
-              <div className="w-full">다음 수정일</div>
-              <div className="w-full">약품명</div>
+          <div className="flex flex-col gap-[5px] items-center bg-white h-[150px] w-full text-black relative overflow-auto">
+            <div className="flex justify-start items-center text-center w-[800px] absolute top-0 left-0">
+              <div className="w-[80px] border-[1px]">차수</div>
+              <div className="w-[100px] border-[1px]">수정일</div>
+              <div className="w-[100px] border-[1px]">분만일</div>
+              <div className="w-[100px] border-[1px]">다음 수정일</div>
+              <div className="w-[100px] border-[1px]">약품명</div>
             </div>
-            <div className="block overflow-scroll-y w-full">
+            <div className="w-full mt-[25px]">
               {(tempCow.inseminationHistory ?? []).map((record, index) => {
                 return (
-                  <div key={index} className="flex gap-[15px]">
-                    <div>
-                      {`${index + 1}차 수정 : ${record.inseminationDate} |
-                      ${record.expectedDeliveryDate} |
-                      ${record.nextInseminationDate}`}
+                  <div key={index} className="flex gap-[15px] w-[1000px]">
+                    <div className="flex">
+                      <div className="w-[80px] text-center">
+                        {index + 1}차 수정 :
+                      </div>
+                      <div className="w-[100px] text-center">
+                        {record.inseminationDate}
+                      </div>
+                      <div className="w-[100px] text-center">
+                        {record.expectedDeliveryDate}
+                      </div>
+                      <div className="w-[100px] text-center">
+                        {record.nextInseminationDate}
+                      </div>
                     </div>
 
+                    <input
+                      value={record.drugName ?? ""}
+                      className="w-[150px] border-[1px]"
+                      placeholder="약품"
+                      maxLength={10}
+                      onChange={(e) =>
+                        handleDrugNameChange(index, e.target.value)
+                      }
+                    />
                     <div className="flex">
                       <button
                         className="underline"
@@ -316,18 +337,10 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                         삭제
                       </button>
                     </div>
-                    <input
-                      value={record.drugName ?? ""}
-                      className="w-[150px] border-[1px]"
-                      placeholder="약품"
-                      maxLength={10}
-                      onChange={(e) => handleDrugNameChange(e)}
-                    />
                   </div>
                 );
               })}
             </div>
-            <div className="flex gap-[5px]"></div>
           </div>
         </div>
         <div className="flex flex-col">
@@ -358,10 +371,7 @@ export default function Modal({ toggle, cow }: EditModalProps) {
             })}
           </div>
         </div>
-        <button
-          className="absolute bottom-[10px] right-[10px]"
-          onClick={handleSave}
-        >
+        <button className="flex justify-end" onClick={handleSave}>
           저장
         </button>
       </div>
