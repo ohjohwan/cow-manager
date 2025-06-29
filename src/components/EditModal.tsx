@@ -63,6 +63,40 @@ export default function Modal({ toggle, cow }: EditModalProps) {
     setTempField("age", `${age}`);
   };
 
+  // 개체 번호 자동 포맷
+  const handleFomatted = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\s/g, "");
+    let autoFormatted = value;
+
+    if (value.length > 8) {
+      autoFormatted = `${value.slice(0, 4)} ${value.slice(4, 8)} ${value.slice(
+        8
+      )}`;
+    } else if (value.length > 4) {
+      autoFormatted = `${value.slice(0, 4)} ${value.slice(4, 8)}`;
+    } else {
+      autoFormatted = `${value.slice(0, value.length)}`;
+    }
+
+    return autoFormatted;
+  };
+
+  // 개체 번호 인풋 유효성 검사
+  const handleNumberCheck = (
+    parent: keyof Cow,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value.replace(/\s/g, "");
+
+    const returnFormatted = handleFomatted(e);
+
+    if (!/^\d+$/.test(value)) {
+      alert("숫자만 입력하세요.");
+    }
+
+    setTempField(parent, returnFormatted);
+  };
+
   const handleAddInseminationRecord = () => {
     const currentHistory: InseminationRecord[] = Array.isArray(
       tempCow.inseminationHistory
@@ -273,7 +307,8 @@ export default function Modal({ toggle, cow }: EditModalProps) {
             <div>부</div>
             <input
               value={tempCow.father ?? ""}
-              onChange={(e) => handleChange("father", e.target.value)}
+              maxLength={11}
+              onChange={(e) => handleNumberCheck("father", e)}
               className="border-[1px] w-[180px]"
             />
           </div>
@@ -281,7 +316,8 @@ export default function Modal({ toggle, cow }: EditModalProps) {
             <div>모</div>
             <input
               value={tempCow.mother ?? ""}
-              onChange={(e) => handleChange("mother", e.target.value)}
+              maxLength={11}
+              onChange={(e) => handleNumberCheck("mother", e)}
               className="border-[1px] w-[180px]"
             />
           </div>
