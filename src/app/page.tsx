@@ -176,7 +176,7 @@ export default function Home() {
 
       <div>
         <h1 className="text-[50px]">검색 결과</h1>
-        <div className="border-[1px] w-[500px] h-[100px]">
+        <div className="border-[1px] w-full h-[100px]">
           {searchReturn &&
             searchReturn.map((result) => (
               <div key={result.number} className="flex gap-[20px]">
@@ -202,7 +202,7 @@ export default function Home() {
 
       <div>
         <p className="text-[50px]">등록 개체</p>
-        <div className="w-[500px] flex flex-col gap-[15px] border-[1px] h-[300px] overflow-y-scroll">
+        <div className="w-full flex flex-col gap-[15px] border-[1px] h-[300px] overflow-y-scroll">
           {cowState.map((cow) => {
             return (
               <div key={cow.number} className="flex gap-[20px]">
