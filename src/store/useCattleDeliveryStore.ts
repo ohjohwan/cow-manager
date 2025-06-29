@@ -16,6 +16,8 @@ export interface Cow {
   age?: string;
   vaccineCheck?: boolean;
   vaccinationHistory?: string[];
+  father?: string;
+  mother?: string;
 }
 
 export type EditableCow = {

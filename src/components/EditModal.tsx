@@ -267,15 +267,25 @@ export default function Modal({ toggle, cow }: EditModalProps) {
         </div>
         <div className="flex justify-between">
           <div className="text-center">
-            부<input className="border-[1px]"></input>
+            <div>부</div>
+            <input
+              value={tempCow.father ?? ""}
+              onChange={(e) => handleChange("father", e.target.value)}
+              className="border-[1px] w-[180px]"
+            />
           </div>
           <div className="text-center">
-            모<input className="border-[1px]"></input>
+            <div>모</div>
+            <input
+              value={tempCow.mother ?? ""}
+              onChange={(e) => handleChange("mother", e.target.value)}
+              className="border-[1px] w-[180px]"
+            />
           </div>
         </div>
         <div className="flex flex-col">
           수정 차수
-          <div className="flex flex-col items-center justify-center bg-white h-[150px] w-full text-black gap-[10px] relative">
+          <div className="flex flex-col items-center justify-center bg-white h-[150px] w-full text-black gap-[10px] relative overflow-x-scroll">
             <div className="flex grow-0 justify-around items-center text-center w-full absolute top-0">
               <div className="border-[1px] w-full ">차수</div>
               <div className="w-full">수정일</div>
@@ -294,7 +304,6 @@ export default function Modal({ toggle, cow }: EditModalProps) {
                     </div>
 
                     <div className="flex">
-                      <button className="underline">수정</button>
                       <button
                         className="underline"
                         onClick={() =>

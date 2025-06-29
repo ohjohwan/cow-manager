@@ -97,14 +97,14 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col gap-[30px] w-[500px]">
+    <div className="flex flex-col gap-[30px] w-[500px] sm:w-[450px]">
       {editToggle && selectedCow && (
         <EditModal toggle={handleEditModal} cow={selectedCow} />
       )}
       <div className="flex gap-[20px]">
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full">
           <p className="text-[50px]">개체 등록</p>
-          <div className="text-[15px] w-[500px] flex gap-[20px]">
+          <div className="text-[15px] w-full flex gap-[20px]">
             <div className="bg-bg">
               <h3 className="text-fg text-[25px]">개체 번호</h3>
               <input
