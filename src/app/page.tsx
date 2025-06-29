@@ -97,7 +97,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col gap-[30px] w-[500px] sm:w-[450px]">
+    <div className="flex flex-col gap-[30px] w-[350px]">
       {editToggle && selectedCow && (
         <EditModal toggle={handleEditModal} cow={selectedCow} />
       )}
@@ -112,7 +112,7 @@ export default function Home() {
                 value={tempCow.number}
                 minLength={11}
                 maxLength={11}
-                className="border-[1px] h-[30px] focus:rounded-[50px] transition-all duration-500"
+                className="text-[20px] border-[1px] w-[130px] h-[50px] px-[5px] focus:rounded-[50px] transition-all duration-500"
                 placeholder="개체 번호 입력"
                 onChange={(e) => handleNumberCheck(e)}
                 inputMode="numeric"
@@ -121,7 +121,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col">
               <h3 className="text-[25px]">암수 여부</h3>
-              <div className="border-[1px] w-[180px] flex justify-center items-center gap-[20px] h-[30px]">
+              <div className="border-[1px] w-[130px] flex justify-center items-center gap-[20px] h-[50px]">
                 <label>
                   <input
                     type="radio"
@@ -145,11 +145,13 @@ export default function Home() {
               </div>
             </div>
             <button
-              className="border-[1px] w-[300px] h-[68px]"
+              className="border-[1px] w-[300px] h-full"
               onClick={handleAddCow}
               disabled={!isValid}
             >
-              등록하기
+              등록
+              <br />
+              하기
             </button>
           </div>
         </div>
@@ -160,7 +162,7 @@ export default function Home() {
         <div className="flex">
           <input
             value={searchCowNumber}
-            className="border-[1px] w-[200px] h-[30px] focus:rounded-[50px] transition-all duration-500"
+            className="text-[20px] border-[1px] w-[200px] h-[50px] px-[5px] focus:rounded-[50px] transition-all duration-500"
             onChange={(e) => setSearchCowNumber(handleFomatted(e))}
             maxLength={11}
             minLength={11}
@@ -176,7 +178,7 @@ export default function Home() {
 
       <div>
         <h1 className="text-[50px]">검색 결과</h1>
-        <div className="border-[1px] w-full h-[100px]">
+        <div className="text-[20px] border-[1px] w-full h-[200px] overflow-y-scroll">
           {searchReturn &&
             searchReturn.map((result) => (
               <div key={result.number} className="flex gap-[20px]">
@@ -202,11 +204,11 @@ export default function Home() {
 
       <div>
         <p className="text-[50px]">등록 개체</p>
-        <div className="w-full flex flex-col gap-[15px] border-[1px] h-[300px] overflow-y-scroll">
+        <div className="text-[20px] w-full flex flex-col gap-[15px] border-[1px] h-[300px] overflow-y-scroll">
           {cowState.map((cow) => {
             return (
               <div key={cow.number} className="flex gap-[20px]">
-                <div className="w-[90px]">{cow.number}</div>
+                <div className="">{cow.number}</div>
                 <div className="flex gap-[10px]">
                   <button
                     className="border-[1px]"
